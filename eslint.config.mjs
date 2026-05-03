@@ -19,6 +19,11 @@ export default defineConfig(
         },
     },
     {
-        ignores: ['dist', 'node_modules', 'eslint.config.mjs', 'jest.config.js'],
+        ignores: [
+            'dist',
+            'node_modules',
+            'eslint.config.mjs',
+            'jest.config.js',
+        ],
     },
 )
