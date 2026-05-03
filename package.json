@@ -1,19 +1,24 @@
 {
-  "name": "auth-service",
-  "version": "1.0.0",
-  "description": "The user management service",
-  "main": "index.js",
-  "scripts": {
-    "dev": "node src/server.js",
-    "format:fix": "prettier . --write",
-    "format:check": "prettier . --check",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Dhruv Nakum",
-  "license": "ISC",
-  "devDependencies": {
-    "@types/node": "^25.6.0",
-    "prettier": "3.8.3",
-    "typescript": "^6.0.3"
-  }
+    "name": "auth-service",
+    "version": "1.0.0",
+    "description": "The user management service",
+    "main": "index.js",
+    "scripts": {
+        "dev": "node src/server.js",
+        "format:fix": "prettier . --write",
+        "format:check": "prettier . --check",
+        "lint:check": "eslint .",
+        "lint:fix": "eslint . --fix",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "Dhruv Nakum",
+    "license": "ISC",
+    "devDependencies": {
+        "@eslint/js": "^9.39.4",
+        "@types/node": "^25.6.0",
+        "eslint": "^9.39.4",
+        "prettier": "3.8.3",
+        "typescript": "^6.0.3",
+        "typescript-eslint": "^8.59.1"
+    }
 }
