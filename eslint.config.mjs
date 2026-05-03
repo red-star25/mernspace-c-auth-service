@@ -14,6 +14,7 @@ export default defineConfig(
       },
     },
     rules: {
+        "dot-notation":"error"
     }
   },
   {
