@@ -1,0 +1,12 @@
+Run Postgres in Docker:
+
+docker run --name auth-postgres \
+  -e POSTGRES_USER=postgres \
+  -e POSTGRES_PASSWORD=postgres \
+  -e POSTGRES_DB=mernstack_auth_service_test \
+  -p 5432:5432 \
+  -d postgres:16
+
+Run auth-service in Docker:
+
+docker build -f docker/dev/Dockerfile -t auth-service:dev .                                                                                                                         
