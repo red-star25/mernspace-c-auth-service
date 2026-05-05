@@ -3,6 +3,7 @@ import { User } from '../entity/User.js'
 import type { UserData } from '../types/index.js'
 import logger from '../config/logger.js'
 import createHttpError from 'http-errors'
+import { Roles } from '../constants/index.js'
 
 export class UserService {
     constructor(private userRepository: Repository<User>) {}
@@ -19,6 +20,7 @@ export class UserService {
                 lastName,
                 email,
                 password,
+                role: Roles.CUSTOMER,
             })
         } catch (err) {
             logger.error(err)

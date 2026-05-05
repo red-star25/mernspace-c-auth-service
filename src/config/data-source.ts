@@ -27,7 +27,7 @@ function postgresDataSourceOptions(): DataSourceOptions {
         username: DB_USERNAME,
         password: DB_PASSWORD,
         database: DB_NAME,
-        synchronize: Config.NODE_ENV === 'test' || Config.NODE_ENV === 'dev', // Don't use this in production
+        synchronize: false, // Always keep false
         logging: false,
         entities: [User],
         migrations: [],
