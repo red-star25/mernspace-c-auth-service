@@ -5,13 +5,15 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "dev": "nodemon --exec tsx src/server.ts",
+        "dev": "cross-env NODE_ENV=dev nodemon --exec tsx src/server.ts",
         "format:fix": "prettier . --write",
         "format:check": "prettier . --check",
         "lint:check": "eslint .",
         "lint:fix": "eslint . --fix",
         "test": "NODE_OPTIONS='--experimental-vm-modules' jest --watch --runInBand",
-        "prepare": "husky"
+        "prepare": "husky",
+        "start": "ts-node src/index.ts",
+        "typeorm": "typeorm-ts-node-commonjs"
     },
     "author": "Dhruv Nakum",
     "license": "ISC",
@@ -23,6 +25,7 @@
         "@types/node": "^25.6.0",
         "@types/supertest": "^7.2.0",
         "@types/winston": "^2.4.4",
+        "cross-env": "^10.1.0",
         "eslint": "^9.39.4",
         "husky": "^9.1.7",
         "jest": "^30.3.0",
@@ -46,6 +49,9 @@
         "dotenv": "^17.4.2",
         "express": "^5.2.1",
         "http-errors": "^2.0.1",
+        "pg": "^8.16.3",
+        "reflect-metadata": "^0.2.2",
+        "typeorm": "0.3.28",
         "winston": "^3.19.0"
     }
 }

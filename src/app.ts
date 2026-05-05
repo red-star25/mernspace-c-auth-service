@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import express, { type Response } from 'express'
 import logger from './config/logger.js'
 import authRouter from './routes/auth.js'
