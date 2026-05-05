@@ -133,6 +133,50 @@ describe('POST /auth/register', () => {
             expect(users[0]).toHaveProperty('role')
             expect(users[0].role).toBe(Roles.CUSTOMER)
         })
+
+        it('should store the hased password in the database', async () => {
+            // Arrange
+            const userData = {
+                firstName: 'Dhruv',
+                lastName: 'Nakum',
+                email: 'dhruv@gmail.com',
+                password: 'secret',
+            }
+
+            // Act
+            await request(app).post('/auth/register').send(userData)
+
+            // Assert
+            const userRepository = connection.getRepository(User)
+            const users = await userRepository.find()
+            expect(users[0].password).not.toBe(userData.password)
+            expect(users[0].password).toHaveLength(60)
+            expect(users[0].password).toMatch(/^\$2b\$\d+\$/)
+        })
+
+        it('should return 400 status code if email already exists', async () => {
+            // Arrange
+            const userData = {
+                firstName: 'Dhruv',
+                lastName: 'Nakum',
+                email: 'dhruv@gmail.com',
+                password: 'secret',
+            }
+
+            // Act
+            const userRepository = connection.getRepository(User)
+            await userRepository.save({ ...userData, role: Roles.CUSTOMER })
+
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData)
+
+            const users = await userRepository.find()
+
+            // Assert
+            expect(response.statusCode).toBe(400)
+            expect(users).toHaveLength(1)
+        })
     })
 
     describe('Missing fields', () => {})
