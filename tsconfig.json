@@ -38,6 +38,8 @@
 
         // Recommended Options
         "strict": true,
+        // TypeORM entities: columns are populated by the ORM, not in constructors
+        "strictPropertyInitialization": false,
         "jsx": "react-jsx",
         "verbatimModuleSyntax": true,
         "isolatedModules": true,

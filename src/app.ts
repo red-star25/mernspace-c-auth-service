@@ -6,6 +6,7 @@ import type { HttpError } from 'http-errors'
 import type { NextFunction, Request } from 'express-serve-static-core'
 
 const app = express()
+app.use(express.json())
 
 app.get('/', (req, res) => {
     res.send('Welcome to auth service')
