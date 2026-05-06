@@ -12,6 +12,7 @@ import type { DataSource } from 'typeorm'
 import { AppDataSource } from '../../src/config/data-source.js'
 import { User } from '../../src/entity/User.js'
 import { Roles } from '../../src/constants/index.js'
+import { isJWT } from '../utils/index.js'
 
 describe('POST /auth/register', () => {
     let connection: DataSource
@@ -176,6 +177,66 @@ describe('POST /auth/register', () => {
             // Assert
             expect(response.statusCode).toBe(400)
             expect(users).toHaveLength(1)
+        })
+
+        it('should return the access token and refresh token inside a cookie', async () => {
+            // Arrange
+            const userData = {
+                firstName: 'Dhruv',
+                lastName: 'Nakum',
+                email: 'dhruv@gmail.com',
+                password: 'password',
+            }
+
+            // Act
+            const response = await request(app)
+                .post('/auth/register')
+                .send(userData)
+
+            // Assert
+            function cookieHeaderToList(value: unknown): string[] {
+                if (Array.isArray(value)) {
+                    return value.filter(
+                        (item): item is string => typeof item === 'string',
+                    )
+                }
+                if (typeof value === 'string') {
+                    return [value]
+                }
+                return []
+            }
+
+            function cookieValue(
+                cookies: string[],
+                name: string,
+            ): string | undefined {
+                const prefix = `${name}=`
+                const cookie = cookies.find((c) => c.startsWith(prefix))
+                if (!cookie) return undefined
+                const firstPart = cookie.split(';')[0]
+                if (!firstPart.startsWith(prefix)) return undefined
+                return firstPart.slice(prefix.length)
+            }
+
+            const cookies = cookieHeaderToList(response.headers['set-cookie'])
+            let accessToken = cookieValue(cookies, 'accessToken')
+            let refreshToken = cookieValue(cookies, 'refreshToken')
+
+            cookies.forEach((cookie: string) => {
+                if (cookie.startsWith('accessToken=')) {
+                    accessToken = cookie.split(';')[0].split('=')[1]
+                }
+
+                if (cookie.startsWith('refreshTokeb=')) {
+                    refreshToken = cookie.split(';')[0].split('=')[1]
+                }
+            })
+
+            expect(accessToken).toBeDefined()
+            expect(refreshToken).toBeDefined()
+
+            expect(isJWT(accessToken as string)).toBeTruthy()
+            expect(isJWT(refreshToken as string)).toBeTruthy()
         })
     })
 

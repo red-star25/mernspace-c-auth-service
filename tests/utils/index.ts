@@ -7,3 +7,19 @@ export const truncateTables = async (connection: DataSource) => {
         await repository.clear()
     }
 }
+export const isJWT = (token: string): boolean => {
+    const parts = token.split('.')
+    if (parts.length != 3) {
+        return false
+    }
+
+    try {
+        parts.forEach((part) => {
+            Buffer.from(part, 'base64').toString('utf-8')
+        })
+    } catch {
+        return false
+    }
+
+    return true
+}
