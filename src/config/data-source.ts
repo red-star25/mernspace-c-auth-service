@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import { DataSource, type DataSourceOptions } from 'typeorm'
 import { User } from '../entity/User.js'
 import { Config } from './index.js'
+import { RefreshToken } from '../entity/RefreshToken.js'
 
 function postgresDataSourceOptions(): DataSourceOptions {
     const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME } = Config
@@ -29,7 +30,7 @@ function postgresDataSourceOptions(): DataSourceOptions {
         database: DB_NAME,
         synchronize: false, // Always keep false
         logging: false,
-        entities: [User],
+        entities: [User, RefreshToken],
         migrations: [],
         subscribers: [],
     }
