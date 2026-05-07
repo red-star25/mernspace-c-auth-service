@@ -4,8 +4,10 @@ import logger from './config/logger.js'
 import authRouter from './routes/auth.js'
 import type { HttpError } from 'http-errors'
 import type { NextFunction, Request } from 'express-serve-static-core'
+import cookieParser from 'cookie-parser'
 
 const app = express()
+app.use(cookieParser())
 app.use(express.json())
 
 app.get('/', (req, res) => {

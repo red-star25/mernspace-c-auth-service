@@ -1,5 +1,9 @@
 import type { NextFunction, Response } from 'express'
-import type { LoginUserRequest, RegisterUserRequest } from '../types/index.js'
+import type {
+    AuthRequest,
+    LoginUserRequest,
+    RegisterUserRequest,
+} from '../types/index.js'
 import type { UserService } from '../services/UserService.js'
 import type { Logger } from 'winston'
 import { validationResult } from 'express-validator'
@@ -152,5 +156,11 @@ export class AuthController {
             next(error)
             return
         }
+    }
+
+    async self(req: AuthRequest, res: Response) {
+        console.log(req.auth)
+        const user = await this.userService.findById(Number(req.auth.sub))
+        res.json(user)
     }
 }
