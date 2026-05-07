@@ -28,7 +28,7 @@ function postgresDataSourceOptions(): DataSourceOptions {
         username: DB_USERNAME,
         password: DB_PASSWORD,
         database: DB_NAME,
-        synchronize: false, // Always keep false
+        synchronize: true, // Always keep false
         logging: false,
         entities: [User, RefreshToken],
         migrations: [],
