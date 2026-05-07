@@ -7,11 +7,13 @@ import logger from '../config/logger.js'
 import type { RegisterUserRequest } from '../types/index.js'
 import registerValidator from '../validators/register-validator.js'
 import { TokenService } from '../services/TokenService.js'
+import { RefreshToken } from '../entity/RefreshToken.js'
 
 const router = express.Router()
 const userRepository = AppDataSource.getRepository(User)
 const userService = new UserService(userRepository)
-const tokenService = new TokenService()
+const refreshTokenRepo = AppDataSource.getRepository(RefreshToken)
+const tokenService = new TokenService(refreshTokenRepo)
 const authController = new AuthController(userService, logger, tokenService)
 
 router.post(
