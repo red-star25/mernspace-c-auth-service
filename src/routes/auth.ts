@@ -19,6 +19,7 @@ import { RefreshToken } from '../entity/RefreshToken.js'
 import loginValidator from '../validators/login-validator.js'
 import { CredentialService } from '../services/CredentialService.js'
 import authenticate from '../middlewares/authenticate.js'
+import validateRefreshToken from '../middlewares/validateRefreshToken.js'
 
 const router = express.Router()
 const userRepository = AppDataSource.getRepository(User)
@@ -52,6 +53,13 @@ router.get(
     authenticate,
     (req: Request, res: Response) =>
         void authController.self(req as AuthRequest, res),
+)
+
+router.post(
+    '/refresh',
+    validateRefreshToken,
+    (req: Request, res: Response, next: NextFunction) =>
+        void authController.refresh(req as AuthRequest, res, next),
 )
 
 export default router
