@@ -28,10 +28,10 @@ function postgresDataSourceOptions(): DataSourceOptions {
         username: DB_USERNAME,
         password: DB_PASSWORD,
         database: DB_NAME,
-        synchronize: true, // Always keep false
+        synchronize: false, // Always keep false
         logging: false,
         entities: [User, RefreshToken],
-        migrations: [],
+        migrations: ['src/migration/*.ts'],
         subscribers: [],
     }
 }

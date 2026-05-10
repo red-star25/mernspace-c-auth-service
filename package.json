@@ -13,7 +13,9 @@
         "test": "NODE_OPTIONS='--experimental-vm-modules' jest --watch --runInBand",
         "prepare": "husky",
         "start": "ts-node src/index.ts",
-        "typeorm": "typeorm-ts-node-commonjs"
+        "migration:generate": "cross-env TS_NODE_PROJECT=tsconfig.typeorm.json typeorm-ts-node-esm migration:generate",
+        "migration:run": "cross-env TS_NODE_PROJECT=tsconfig.typeorm.json typeorm-ts-node-esm migration:run",
+        "migration:new": "cross-env TS_NODE_PROJECT=tsconfig.typeorm.json typeorm-ts-node-esm migration:create"
     },
     "author": "Dhruv Nakum",
     "license": "ISC",
