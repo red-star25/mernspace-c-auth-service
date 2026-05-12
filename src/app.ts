@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import express, { type Response } from 'express'
 import logger from './config/logger.js'
 import authRouter from './routes/auth.js'
+import tenantRouter from './routes/tenant.js'
 import type { HttpError } from 'http-errors'
 import type { NextFunction, Request } from 'express-serve-static-core'
 import cookieParser from 'cookie-parser'
@@ -16,6 +17,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/auth', authRouter)
+app.use('/tenant', tenantRouter)
 
 // Global Error Handler.
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
