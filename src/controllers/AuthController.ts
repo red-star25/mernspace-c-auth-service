@@ -11,6 +11,7 @@ import type { JwtPayload } from 'jsonwebtoken'
 import { TokenService } from '../services/TokenService.js'
 import createHttpError from 'http-errors'
 import type { CredentialService } from '../services/CredentialService.js'
+import { Roles } from '../constants/index.js'
 
 export class AuthController {
     constructor(
@@ -45,6 +46,7 @@ export class AuthController {
                 lastName,
                 email,
                 password,
+                role: Roles.CUSTOMER,
             })
             this.logger.info('User has been registered', { id: user.id })
 
@@ -98,7 +100,7 @@ export class AuthController {
             password: '*****',
         })
         try {
-            const user = await this.userService.findByEmail(email)
+            const user = await this.userService.findByEmailWithPassword(email)
             if (!user) {
                 const err = createHttpError(
                     400,

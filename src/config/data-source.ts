@@ -1,6 +1,13 @@
 import 'reflect-metadata'
+import path from 'path'
+import { fileURLToPath } from 'url'
 import { DataSource, type DataSourceOptions } from 'typeorm'
 import { Config } from './index.js'
+import { User } from '../entity/User.js'
+import { Tenant } from '../entity/Tenants.js'
+import { RefreshToken } from '../entity/RefreshToken.js'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 function postgresDataSourceOptions(): DataSourceOptions {
     const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME } = Config
@@ -28,8 +35,8 @@ function postgresDataSourceOptions(): DataSourceOptions {
         database: DB_NAME,
         synchronize: false, // Always keep false
         logging: false,
-        entities: ['src/entity/*.ts'],
-        migrations: ['src/migration/*.ts'],
+        entities: [User, Tenant, RefreshToken],
+        migrations: [path.join(__dirname, '../migration/*.{js,ts}')],
         subscribers: [],
     }
 }

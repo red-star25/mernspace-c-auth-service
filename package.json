@@ -6,6 +6,7 @@
     "type": "module",
     "scripts": {
         "dev": "cross-env NODE_ENV=dev nodemon --exec tsx src/server.ts",
+        "build": "tsc",
         "format:fix": "prettier . --write",
         "format:check": "prettier . --check",
         "lint:check": "eslint .",

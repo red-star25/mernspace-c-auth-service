@@ -6,21 +6,21 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column()
     firstName: string
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column()
     lastName: string
 
-    @Column({ unique: true, type: 'varchar', length: 255 })
+    @Column({ unique: true })
     email: string
 
-    @Column({ type: 'varchar', length: 255 })
+    @Column({ select: false })
     password: string
 
-    @Column({ type: 'varchar', length: 64 })
+    @Column()
     role: string
 
     @ManyToOne(() => Tenant)
-    tenant: Tenant
+    tenant: Tenant | null
 }
