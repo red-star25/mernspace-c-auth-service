@@ -1,19 +1,11 @@
 import request from 'supertest'
-import app from '../../src/app.js'
-import {
-    describe,
-    it,
-    expect,
-    beforeAll,
-    afterAll,
-    beforeEach,
-} from '@jest/globals'
-import type { DataSource } from 'typeorm'
-import { AppDataSource } from '../../src/config/data-source.js'
-import { User } from '../../src/entity/User.js'
-import { Roles } from '../../src/constants/index.js'
-import { isJWT } from '../utils/index.js'
-import { RefreshToken } from '../../src/entity/RefreshToken.js'
+import app from '../../src/app'
+import { User } from '../../src/entity/User'
+import { DataSource } from 'typeorm'
+import { AppDataSource } from '../../src/config/data-source'
+import { Roles } from '../../src/constants'
+import { isJWT } from '../utils'
+import { RefreshToken } from '../../src/entity/RefreshToken'
 
 describe('POST /auth/register', () => {
     let connection: DataSource
@@ -36,12 +28,11 @@ describe('POST /auth/register', () => {
         it('should return the 201 status code', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: 'dhruv@gmail.com',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
                 password: 'password',
             }
-
             // Act
             const response = await request(app)
                 .post('/auth/register')
@@ -51,81 +42,75 @@ describe('POST /auth/register', () => {
             expect(response.statusCode).toBe(201)
         })
 
-        it('should return valid JSON response', async () => {
+        it('should return valid json response', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: 'dhruv@gmail.com',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
                 password: 'password',
             }
-
             // Act
             const response = await request(app)
                 .post('/auth/register')
                 .send(userData)
 
-            // Assert
-            expect(response.headers['content-type']).toEqual(
-                expect.stringContaining('json'),
-            )
+            // Assert application/json utf-8
+            expect(
+                (response.headers as Record<string, string>)['content-type'],
+            ).toEqual(expect.stringContaining('json'))
         })
 
         it('should persist the user in the database', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: 'dhruv@gmail.com',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
                 password: 'password',
             }
-
             // Act
             await request(app).post('/auth/register').send(userData)
 
             // Assert
             const userRepository = connection.getRepository(User)
             const users = await userRepository.find()
-
             expect(users).toHaveLength(1)
-            expect(users[0]?.firstName).toBe(userData.firstName)
-            expect(users[0]?.lastName).toBe(userData.lastName)
-            expect(users[0]?.email).toBe(userData.email)
+            expect(users[0].firstName).toBe(userData.firstName)
+            expect(users[0].lastName).toBe(userData.lastName)
+            expect(users[0].email).toBe(userData.email)
         })
 
         it('should return an id of the created user', async () => {
+            // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: 'dhruv@gmail.com',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
                 password: 'password',
             }
-
+            // Act
             const response = await request(app)
                 .post('/auth/register')
                 .send(userData)
 
-            const body = response.body as { id: number }
-            expect(body).toHaveProperty('id')
-            expect(typeof body.id).toBe('number')
-
-            const userRepository = connection.getRepository(User)
-            const persisted = await userRepository.findOneBy({
-                email: userData.email,
-            })
-
-            expect(persisted?.id).toBe(body.id)
+            // Assert
+            expect(response.body).toHaveProperty('id')
+            const repository = connection.getRepository(User)
+            const users = await repository.find()
+            expect((response.body as Record<string, string>).id).toBe(
+                users[0].id,
+            )
         })
 
         it('should assign a customer role', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: 'dhruv@gmail.com',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
                 password: 'password',
             }
-
             // Act
             await request(app).post('/auth/register').send(userData)
 
@@ -136,45 +121,42 @@ describe('POST /auth/register', () => {
             expect(users[0].role).toBe(Roles.CUSTOMER)
         })
 
-        it('should store the hased password in the database', async () => {
+        it('should store the hashed password in the database', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: 'dhruv@gmail.com',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
                 password: 'password',
             }
-
             // Act
             await request(app).post('/auth/register').send(userData)
 
             // Assert
             const userRepository = connection.getRepository(User)
-            const users = await userRepository.find()
+            const users = await userRepository.find({ select: ['password'] })
             expect(users[0].password).not.toBe(userData.password)
             expect(users[0].password).toHaveLength(60)
-            expect(users[0].password).toMatch(/^\$2b\$\d+\$/)
+            expect(users[0].password).toMatch(/^\$2[a|b]\$\d+\$/)
         })
 
-        it('should return 400 status code if email already exists', async () => {
+        it('should return 400 status code if email is already exists', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: 'dhruv@gmail.com',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
                 password: 'password',
             }
-
-            // Act
             const userRepository = connection.getRepository(User)
             await userRepository.save({ ...userData, role: Roles.CUSTOMER })
 
+            // Act
             const response = await request(app)
                 .post('/auth/register')
                 .send(userData)
 
             const users = await userRepository.find()
-
             // Assert
             expect(response.statusCode).toBe(400)
             expect(users).toHaveLength(1)
@@ -183,9 +165,9 @@ describe('POST /auth/register', () => {
         it('should return the access token and refresh token inside a cookie', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: 'dhruv@gmail.com',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
                 password: 'password',
             }
 
@@ -194,58 +176,36 @@ describe('POST /auth/register', () => {
                 .post('/auth/register')
                 .send(userData)
 
+            interface Headers {
+                ['set-cookie']: string[]
+            }
             // Assert
-            function cookieHeaderToList(value: unknown): string[] {
-                if (Array.isArray(value)) {
-                    return value.filter(
-                        (item): item is string => typeof item === 'string',
-                    )
-                }
-                if (typeof value === 'string') {
-                    return [value]
-                }
-                return []
-            }
-
-            function cookieValue(
-                cookies: string[],
-                name: string,
-            ): string | undefined {
-                const prefix = `${name}=`
-                const cookie = cookies.find((c) => c.startsWith(prefix))
-                if (!cookie) return undefined
-                const firstPart = cookie.split(';')[0]
-                if (!firstPart.startsWith(prefix)) return undefined
-                return firstPart.slice(prefix.length)
-            }
-
-            const cookies = cookieHeaderToList(response.headers['set-cookie'])
-            let accessToken = cookieValue(cookies, 'accessToken')
-            let refreshToken = cookieValue(cookies, 'refreshToken')
-
-            cookies.forEach((cookie: string) => {
+            let accessToken: string | null = null
+            let refreshToken: string | null = null
+            const cookies =
+                (response.headers as unknown as Headers)['set-cookie'] || []
+            // accessToken=eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNjkzOTA5Mjc2LCJleHAiOjE2OTM5MDkzMzYsImlzcyI6Im1lcm5zcGFjZSJ9.KetQMEzY36vxhO6WKwSR-P_feRU1yI-nJtp6RhCEZQTPlQlmVsNTP7mO-qfCdBr0gszxHi9Jd1mqf-hGhfiK8BRA_Zy2CH9xpPTBud_luqLMvfPiz3gYR24jPjDxfZJscdhE_AIL6Uv2fxCKvLba17X0WbefJSy4rtx3ZyLkbnnbelIqu5J5_7lz4aIkHjt-rb_sBaoQ0l8wE5KzyDNy7mGUf7cI_yR8D8VlO7x9llbhvCHF8ts6YSBRBt_e2Mjg5txtfBaDq5auCTXQ2lmnJtMb75t1nAFu8KwQPrDYmwtGZDkHUcpQhlP7R-y3H99YnrWpXbP8Zr_oO67hWnoCSw; Max-Age=43200; Domain=localhost; Path=/; Expires=Tue, 05 Sep 2023 22:21:16 GMT; HttpOnly; SameSite=Strict
+            cookies.forEach((cookie) => {
                 if (cookie.startsWith('accessToken=')) {
-                    accessToken = cookie.split(';')[0].split('=')[1]
+                    accessToken = cookie.split(';')[0].split('=')[1] ?? null
                 }
 
-                if (cookie.startsWith('refreshTokeb=')) {
-                    refreshToken = cookie.split(';')[0].split('=')[1]
+                if (cookie.startsWith('refreshToken=')) {
+                    refreshToken = cookie.split(';')[0].split('=')[1] ?? null
                 }
             })
+            expect(accessToken).not.toBeNull()
+            expect(refreshToken).not.toBeNull()
 
-            expect(accessToken).toBeDefined()
-            expect(refreshToken).toBeDefined()
-
-            expect(isJWT(accessToken as string)).toBeTruthy()
-            expect(isJWT(refreshToken as string)).toBeTruthy()
+            expect(isJWT(accessToken ?? '')).toBeTruthy()
+            expect(isJWT(refreshToken ?? '')).toBeTruthy()
         })
-
-        it('should store the request token in the database', async () => {
+        it('should store the refresh token in the database', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: 'dhruv@gmail.com',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
                 password: 'password',
             }
 
@@ -256,8 +216,7 @@ describe('POST /auth/register', () => {
 
             // Assert
             const refreshTokenRepo = connection.getRepository(RefreshToken)
-            // const refreshTokens = await refreshTokenRepo.find()
-            // expect(refreshTokens).toHaveLength(1)
+            // const refreshTokens = await refreshTokenRepo.find();
 
             const tokens = await refreshTokenRepo
                 .createQueryBuilder('refreshToken')
@@ -269,22 +228,21 @@ describe('POST /auth/register', () => {
             expect(tokens).toHaveLength(1)
         })
     })
-
-    describe('Missing fields', () => {
+    describe('Fields are missing', () => {
         it('should return 400 status code if email field is missing', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
+                firstName: 'Rakesh',
+                lastName: 'K',
                 email: '',
                 password: 'password',
             }
-
             // Act
             const response = await request(app)
                 .post('/auth/register')
                 .send(userData)
 
+            // Assert
             expect(response.statusCode).toBe(400)
             const userRepository = connection.getRepository(User)
             const users = await userRepository.find()
@@ -295,36 +253,35 @@ describe('POST /auth/register', () => {
             // Arrange
             const userData = {
                 firstName: '',
-                lastName: 'Nakum',
-                email: 'dhruv@gmail.com',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
                 password: 'password',
             }
-
             // Act
             const response = await request(app)
                 .post('/auth/register')
                 .send(userData)
 
+            // Assert
             expect(response.statusCode).toBe(400)
             const userRepository = connection.getRepository(User)
             const users = await userRepository.find()
             expect(users).toHaveLength(0)
         })
-
         it('should return 400 status code if lastName is missing', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
+                firstName: 'Rakesh',
                 lastName: '',
-                email: 'dhruv@gmail.com',
+                email: 'rakesh@mern.space',
                 password: 'password',
             }
-
             // Act
             const response = await request(app)
                 .post('/auth/register')
                 .send(userData)
 
+            // Assert
             expect(response.statusCode).toBe(400)
             const userRepository = connection.getRepository(User)
             const users = await userRepository.find()
@@ -334,17 +291,17 @@ describe('POST /auth/register', () => {
         it('should return 400 status code if password is missing', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: 'dhruv@gmail.com',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
                 password: '',
             }
-
             // Act
             const response = await request(app)
                 .post('/auth/register')
                 .send(userData)
 
+            // Assert
             expect(response.statusCode).toBe(400)
             const userRepository = connection.getRepository(User)
             const users = await userRepository.find()
@@ -356,9 +313,9 @@ describe('POST /auth/register', () => {
         it('should trim the email field', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: ' dhruv@gmail.com ',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: ' rakesh@mern.space ',
                 password: 'password',
             }
             // Act
@@ -368,15 +325,14 @@ describe('POST /auth/register', () => {
             const userRepository = connection.getRepository(User)
             const users = await userRepository.find()
             const user = users[0]
-            expect(user.email).toBe('dhruv@gmail.com')
+            expect(user.email).toBe('rakesh@mern.space')
         })
-
-        it('should return 400 status code if the email is not a valid email', async () => {
+        it('should return 400 status code if email is not a valid email', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: 'dhruvgmail.com',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh_mern.space', // Invalid email
                 password: 'password',
             }
             // Act
@@ -390,14 +346,13 @@ describe('POST /auth/register', () => {
             const users = await userRepository.find()
             expect(users).toHaveLength(0)
         })
-
-        it('should return 400 status code if the password length is less than 8 characters', async () => {
+        it('should return 400 status code if password length is less than 8 chars', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
-                email: 'dhruv@gmail.com',
-                password: 'pass',
+                firstName: 'Rakesh',
+                lastName: 'K',
+                email: 'rakesh@mern.space',
+                password: 'pass', // less than 8 chars
             }
             // Act
             const response = await request(app)
@@ -413,10 +368,10 @@ describe('POST /auth/register', () => {
         it('shoud return an array of error messages if email is missing', async () => {
             // Arrange
             const userData = {
-                firstName: 'Dhruv',
-                lastName: 'Nakum',
+                firstName: 'Rakesh',
+                lastName: 'K',
                 email: '',
-                password: 'pass',
+                password: 'password',
             }
             // Act
             const response = await request(app)
