@@ -11,8 +11,16 @@ export default {
             {
                 useESM: true,
                 tsconfig: 'tsconfig.jest.json',
+
             },
         ],
     },
+    collectCoverage: true,
+    coverageProvider: 'v8',
+    collectCoverageFrom: [
+        'src/**/*.ts',
+        '!tests/**',
+        '!**/node_modules/**',
+    ],
     verbose: true,
 }
