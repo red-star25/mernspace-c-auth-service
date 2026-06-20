@@ -3,7 +3,7 @@ import type { Tenant } from '../entity/Tenants.js'
 import type { ITenant, TenantQueryParams } from '../types/index.js'
 
 export class TenantService {
-    constructor(private tenantRepository: Repository<Tenant>) {}
+    constructor(private readonly tenantRepository: Repository<Tenant>) {}
 
     async create(tenantData: ITenant) {
         return await this.tenantRepository.save(tenantData)

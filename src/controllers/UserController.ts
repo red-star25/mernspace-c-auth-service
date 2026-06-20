@@ -12,8 +12,8 @@ import type {
 
 export class UserController {
     constructor(
-        private userService: UserService,
-        private logger: Logger,
+        private readonly userService: UserService,
+        private readonly logger: Logger,
     ) {}
 
     async create(req: CreateUserRequest, res: Response, next: NextFunction) {
@@ -36,7 +36,7 @@ export class UserController {
                 email,
                 password,
                 role,
-                ...(tenantId !== undefined ? { tenantId } : {}),
+                ...(tenantId ? { tenantId } : {}),
             })
             res.status(201).json({ id: user.id })
         } catch (err) {
@@ -57,7 +57,7 @@ export class UserController {
         const { firstName, lastName, role, email, tenantId } = req.body
         const userId = req.params.id
 
-        if (isNaN(Number(userId))) {
+        if (Number.isNaN(userId)) {
             next(createHttpError(400, 'Invalid url param.'))
             return
         }
@@ -104,7 +104,7 @@ export class UserController {
     async getOne(req: Request, res: Response, next: NextFunction) {
         const userId = req.params.id
 
-        if (isNaN(Number(userId))) {
+        if (Number.isNaN(userId)) {
             next(createHttpError(400, 'Invalid url param.'))
             return
         }
@@ -127,7 +127,7 @@ export class UserController {
     async destroy(req: Request, res: Response, next: NextFunction) {
         const userId = req.params.id
 
-        if (isNaN(Number(userId))) {
+        if (Number.isNaN(userId)) {
             next(createHttpError(400, 'Invalid url param.'))
             return
         }

@@ -15,8 +15,9 @@ export default defineConfig(
             },
         },
         rules: {
-            // 'dot-notation': 'error',
-            // 'no-console': "error"
+            'dot-notation': 'error',
+            'no-console': "error",
+            "@typescript-eslint/require-await": "off",
         },
     },
     {

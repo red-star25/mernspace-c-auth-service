@@ -1,11 +1,12 @@
 import 'reflect-metadata'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { DataSource, type DataSourceOptions } from 'typeorm'
 import { Config } from './index.js'
 import { User } from '../entity/User.js'
 import { Tenant } from '../entity/Tenants.js'
 import { RefreshToken } from '../entity/RefreshToken.js'
+import createHttpError from 'http-errors'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -18,9 +19,7 @@ function postgresDataSourceOptions(): DataSourceOptions {
         DB_PASSWORD === undefined ||
         !DB_NAME
     ) {
-        throw new Error(
-            'Database configuration is incomplete. Set DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, and DB_NAME.',
-        )
+        throw createHttpError(500, 'Missing database values')
     }
     const port = Number(DB_PORT)
     if (!Number.isFinite(port)) {
