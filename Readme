@@ -10,3 +10,5 @@ docker run --name auth-postgres \
 Run auth-service in Docker:
 
 docker build -f docker/dev/Dockerfile -t auth-service:dev .
+
+Our awesome auth service
