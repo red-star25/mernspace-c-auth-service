@@ -1,25 +1,17 @@
-import path from 'path'
 import jwt, { type JwtPayload } from 'jsonwebtoken'
-import fs from 'fs'
-import { fileURLToPath } from 'url'
 import createHttpError from 'http-errors'
 import { Config } from '../config/index.js'
 import { RefreshToken } from '../entity/RefreshToken.js'
 import type { User } from '../entity/User.js'
 import type { Repository } from 'typeorm'
 
-const PRIVATE_KEY_PATH = path.join(
-    path.dirname(fileURLToPath(import.meta.url)),
-    '../../certs/private.pem',
-)
-
 export class TokenService {
     constructor(private refreshTokenRepository: Repository<RefreshToken>) {}
 
     generateAccessToken(payload: JwtPayload) {
-        let privateKey: Buffer
+        let privateKey: string
         try {
-            privateKey = fs.readFileSync(PRIVATE_KEY_PATH)
+            privateKey = Config.PRIVATE_KEY_PATH!
         } catch {
             const err = createHttpError(500, 'Error while reading private key')
             throw err
