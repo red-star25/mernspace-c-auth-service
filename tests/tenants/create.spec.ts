@@ -2,11 +2,11 @@ import { DataSource } from 'typeorm'
 import request from 'supertest'
 import { AppDataSource } from '../../src/config/data-source'
 import app from '../../src/app'
-import createJWKSMock from 'mock-jwks'
+import { createJWKSMock } from '../utils'
 import { Roles } from '../../src/constants'
 import { Tenant } from '../../src/entity/Tenants'
 
-describe('POST /tenants', () => {
+describe('POST /tenant', () => {
     let connection: DataSource
     let jwks: ReturnType<typeof createJWKSMock>
     let adminToken: string
@@ -42,7 +42,7 @@ describe('POST /tenants', () => {
                 address: 'Tenant address',
             }
             const response = await request(app)
-                .post('/tenants')
+                .post('/tenant')
                 .set('Cookie', [`accessToken=${adminToken}`])
                 .send(tenantData)
 
@@ -56,7 +56,7 @@ describe('POST /tenants', () => {
             }
 
             await request(app)
-                .post('/tenants')
+                .post('/tenant')
                 .set('Cookie', [`accessToken=${adminToken}`])
                 .send(tenantData)
 
@@ -73,9 +73,7 @@ describe('POST /tenants', () => {
                 address: 'Tenant address',
             }
 
-            const response = await request(app)
-                .post('/tenants')
-                .send(tenantData)
+            const response = await request(app).post('/tenant').send(tenantData)
             expect(response.statusCode).toBe(401)
 
             const tenantRepository = connection.getRepository(Tenant)
@@ -96,7 +94,7 @@ describe('POST /tenants', () => {
             }
 
             const response = await request(app)
-                .post('/tenants')
+                .post('/tenant')
                 .set('Cookie', [`accessToken=${managerToken}`])
                 .send(tenantData)
             expect(response.statusCode).toBe(403)

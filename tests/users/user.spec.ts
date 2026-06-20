@@ -1,8 +1,7 @@
 import { DataSource } from 'typeorm'
 import request from 'supertest'
-import createJWKSMock from 'mock-jwks'
-
 import { AppDataSource } from '../../src/config/data-source'
+import { createJWKSMock } from '../utils'
 import app from '../../src/app'
 import { User } from '../../src/entity/User'
 import { Roles } from '../../src/constants'

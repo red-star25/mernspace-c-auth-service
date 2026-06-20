@@ -22,6 +22,7 @@ export default defineConfig(
     {
         ignores: [
             'dist',
+            'coverage',
             'node_modules',
             'eslint.config.mjs',
             'jest.config.js',
