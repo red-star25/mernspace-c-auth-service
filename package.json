@@ -11,6 +11,7 @@
         "format:check": "prettier . --check",
         "lint:check": "eslint .",
         "lint:fix": "eslint . --fix",
+        "lint": "eslint .",
         "test": "NODE_OPTIONS='--experimental-vm-modules' jest --runInBand --no-cache --coverage --all",
         "test:watch": "NODE_OPTIONS='--experimental-vm-modules' jest --watch --runInBand",
         "prepare": "husky",
