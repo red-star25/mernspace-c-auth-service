@@ -1,6 +1,7 @@
 /** @type {import("jest").Config} */
 export default {
     testEnvironment: 'node',
+    setupFiles: ['<rootDir>/tests/jest.setup.ts'],
     extensionsToTreatAsEsm: ['.ts'],
     moduleNameMapper: {
         '^(\\.{1,2}/.*)\\.js$': '$1',
