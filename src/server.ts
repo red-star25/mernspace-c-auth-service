@@ -7,7 +7,7 @@ import { User } from './entity/User.js'
 import { UserService } from './services/UserService.js'
 import { Roles } from './constants/index.js'
 
-const ensureAdminUser = async () => {
+export const ensureAdminUser = async () => {
     const { ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_FIRST_NAME, ADMIN_LAST_NAME } =
         Config
 
@@ -41,7 +41,7 @@ const ensureAdminUser = async () => {
     }
 }
 
-const startServer = async () => {
+export const startServer = async () => {
     const PORT = Config.PORT
     try {
         await AppDataSource.initialize()
@@ -55,4 +55,6 @@ const startServer = async () => {
     }
 }
 
-await startServer()
+if (process.env.NODE_ENV !== 'test') {
+    await startServer()
+}
