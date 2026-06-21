@@ -7,8 +7,8 @@ import type { CreateTenantRequest, TenantQueryParams } from '../types/index.js'
 
 export class TenantController {
     constructor(
-        private tenantService: TenantService,
-        private logger: Logger,
+        private readonly tenantService: TenantService,
+        private readonly logger: Logger,
     ) {}
 
     async create(req: CreateTenantRequest, res: Response, next: NextFunction) {
@@ -41,7 +41,7 @@ export class TenantController {
         const { name, address } = req.body
         const tenantId = req.params.id
 
-        if (isNaN(Number(tenantId))) {
+        if (Number.isNaN(tenantId)) {
             next(createHttpError(400, 'Invalid url param.'))
             return
         }
@@ -86,7 +86,7 @@ export class TenantController {
     async getOne(req: Request, res: Response, next: NextFunction) {
         const tenantId = req.params.id
 
-        if (isNaN(Number(tenantId))) {
+        if (Number.isNaN(tenantId)) {
             next(createHttpError(400, 'Invalid url param.'))
             return
         }
@@ -109,7 +109,7 @@ export class TenantController {
     async destroy(req: Request, res: Response, next: NextFunction) {
         const tenantId = req.params.id
 
-        if (isNaN(Number(tenantId))) {
+        if (Number.isNaN(tenantId)) {
             next(createHttpError(400, 'Invalid url param.'))
             return
         }

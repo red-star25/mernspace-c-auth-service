@@ -1,21 +1,41 @@
 import jwt, { type JwtPayload } from 'jsonwebtoken'
+import fs from 'node:fs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import createHttpError from 'http-errors'
 import { Config } from '../config/index.js'
 import { RefreshToken } from '../entity/RefreshToken.js'
 import type { User } from '../entity/User.js'
 import type { Repository } from 'typeorm'
 
+const DEFAULT_PRIVATE_KEY_PATH = path.join(
+    path.dirname(fileURLToPath(import.meta.url)),
+    '../../certs/private.pem',
+)
+
+function readPrivateKey(): string {
+    const { PRIVATE_KEY_PATH } = Config
+
+    if (PRIVATE_KEY_PATH?.includes('BEGIN')) {
+        return PRIVATE_KEY_PATH
+    }
+
+    const keyPath = PRIVATE_KEY_PATH || DEFAULT_PRIVATE_KEY_PATH
+
+    try {
+        return fs.readFileSync(keyPath, 'utf-8')
+    } catch {
+        throw createHttpError(500, 'Error while reading private key')
+    }
+}
+
 export class TokenService {
-    constructor(private refreshTokenRepository: Repository<RefreshToken>) {}
+    constructor(
+        private readonly refreshTokenRepository: Repository<RefreshToken>,
+    ) {}
 
     generateAccessToken(payload: JwtPayload) {
-        let privateKey: string
-        try {
-            privateKey = Config.PRIVATE_KEY_PATH!
-        } catch {
-            const err = createHttpError(500, 'Error while reading private key')
-            throw err
-        }
+        const privateKey = readPrivateKey()
 
         const accessToken = jwt.sign(payload, privateKey, {
             algorithm: 'RS256',

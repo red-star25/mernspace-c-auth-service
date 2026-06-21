@@ -9,6 +9,9 @@ import type { NextFunction, Request } from 'express-serve-static-core'
 import cookieParser from 'cookie-parser'
 
 const app = express()
+
+app.disable('x-powered-by')
+
 app.use(express.static('public', { dotfiles: 'allow' }))
 app.use(cookieParser())
 app.use(express.json())

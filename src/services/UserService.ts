@@ -9,7 +9,7 @@ import bcrypt from 'bcrypt'
 import { User } from '../entity/User.js'
 
 export class UserService {
-    constructor(private userRepository: Repository<User>) {}
+    constructor(private readonly userRepository: Repository<User>) {}
 
     async create({
         firstName,
