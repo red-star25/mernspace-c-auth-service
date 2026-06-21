@@ -1,5 +1,5 @@
 import { DataSource } from 'typeorm'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { isJWT } from '../utils'
 import request from 'supertest'
 import { AppDataSource } from '../../src/config/data-source'

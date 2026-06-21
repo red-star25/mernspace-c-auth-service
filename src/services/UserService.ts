@@ -5,7 +5,7 @@ import type {
     UserData,
     UserQueryParams,
 } from '../types/index.js'
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { User } from '../entity/User.js'
 
 export class UserService {
