@@ -1,17 +1,25 @@
 import 'reflect-metadata'
 import path from 'node:path'
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
+
+config({
+    path: path.join(__dirname, `../../.env.${process.env.NODE_ENV || 'dev'}`),
+})
 import { fileURLToPath } from 'node:url'
 import { DataSource, type DataSourceOptions } from 'typeorm'
-import { Config } from './index.js'
 import { User } from '../entity/User.js'
 import { Tenant } from '../entity/Tenants.js'
 import { RefreshToken } from '../entity/RefreshToken.js'
 import createHttpError from 'http-errors'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
+import { config } from 'dotenv'
 
 function postgresDataSourceOptions(): DataSourceOptions {
-    const { DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME } = Config
+    const DB_HOST = process.env.DB_HOST
+    const DB_PORT = process.env.DB_PORT
+    const DB_USERNAME = process.env.DB_USERNAME
+    const DB_PASSWORD = process.env.DB_PASSWORD
+    const DB_NAME = process.env.DB_NAME
     if (
         !DB_HOST ||
         !DB_PORT ||
@@ -40,4 +48,12 @@ function postgresDataSourceOptions(): DataSourceOptions {
     }
 }
 
-export const AppDataSource = new DataSource(postgresDataSourceOptions())
+export const AppDataSource = (() => {
+    try {
+        return new DataSource(postgresDataSourceOptions())
+    } catch (e) {
+        // eslint-disable-next-line no-console
+        console.error('DataSource init error:', e)
+        throw e
+    }
+})()

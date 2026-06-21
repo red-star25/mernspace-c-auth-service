@@ -1,12 +1,12 @@
-// import { config } from 'dotenv'
-// import path from 'node:path'
-// import { fileURLToPath } from 'node:url'
+import { config } from 'dotenv'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-// // const __dirname = path.dirname(fileURLToPath(import.meta.url))
+const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
-// // // config({
-// // //     path: path.join(__dirname, `../../.env.${process.env.NODE_ENV || 'dev'}`),
-// // // })
+config({
+    path: path.join(__dirname, `../../.env.${process.env.NODE_ENV || 'dev'}`),
+})
 
 const {
     PORT,
@@ -19,6 +19,10 @@ const {
     REFRESH_TOKEN_SECRET,
     JWKS_URI,
     PRIVATE_KEY_PATH,
+    ADMIN_EMAIL,
+    ADMIN_PASSWORD,
+    ADMIN_FIRST_NAME,
+    ADMIN_LAST_NAME,
 } = process.env
 
 export const Config = {
@@ -32,4 +36,8 @@ export const Config = {
     REFRESH_TOKEN_SECRET,
     JWKS_URI,
     PRIVATE_KEY_PATH,
+    ADMIN_EMAIL,
+    ADMIN_PASSWORD,
+    ADMIN_FIRST_NAME,
+    ADMIN_LAST_NAME,
 }

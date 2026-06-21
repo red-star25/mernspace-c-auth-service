@@ -7,6 +7,7 @@ import type {
 } from '../types/index.js'
 import bcrypt from 'bcryptjs'
 import { User } from '../entity/User.js'
+import { Roles } from '../constants/index.js'
 
 export class UserService {
     constructor(private readonly userRepository: Repository<User>) {}
@@ -130,5 +131,22 @@ export class UserService {
 
     async deleteById(userId: number) {
         return await this.userRepository.delete(userId)
+    }
+
+    async ensureDefaultAdmin(adminData: UserData) {
+        const existingAdmin = await this.userRepository.findOne({
+            where: { role: Roles.ADMIN },
+        })
+        if (existingAdmin) {
+            return existingAdmin
+        }
+
+        try {
+            return await this.create(adminData)
+        } catch {
+            return await this.userRepository.findOne({
+                where: { email: adminData.email },
+            })
+        }
     }
 }
