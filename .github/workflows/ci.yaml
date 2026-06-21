@@ -21,6 +21,8 @@ jobs:
             - name: Test and coverage
               run: npm run test
               env:
+                  NODE_ENV: test
+                  PORT: 5501
                   DB_HOST: ${{ secrets.TEST_DB_HOST }}
                   DB_PORT: ${{ secrets.TEST_DB_PORT }}
                   DB_USERNAME: ${{ secrets.TEST_DB_USERNAME }}

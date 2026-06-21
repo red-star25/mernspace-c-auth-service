@@ -17,14 +17,14 @@ describe('Config', () => {
     })
 
     it('loads database and auth settings from environment', () => {
-        expect(Config.PORT).toBeDefined()
-        expect(Config.DB_HOST).toBeDefined()
-        expect(Config.DB_PORT).toBeDefined()
-        expect(Config.DB_USERNAME).toBeDefined()
-        expect(Config.DB_PASSWORD).toBeDefined()
-        expect(Config.DB_NAME).toBeDefined()
-        expect(Config.REFRESH_TOKEN_SECRET).toBeDefined()
-        expect(Config.JWKS_URI).toBeDefined()
+        expect(Config).toHaveProperty('PORT')
+        expect(Config).toHaveProperty('DB_HOST')
+        expect(Config).toHaveProperty('DB_PORT')
+        expect(Config).toHaveProperty('DB_USERNAME')
+        expect(Config).toHaveProperty('DB_PASSWORD')
+        expect(Config).toHaveProperty('DB_NAME')
+        expect(Config).toHaveProperty('REFRESH_TOKEN_SECRET')
+        expect(Config).toHaveProperty('JWKS_URI')
     })
 
     it('defaults NODE_ENV to dev when loading env file', async () => {
