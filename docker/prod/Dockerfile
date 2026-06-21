@@ -16,6 +16,8 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
+RUN apk add --no-cache python3 make g++
+
 COPY package*.json ./
 
 RUN npm ci --ignore-scripts
@@ -24,4 +26,4 @@ COPY --from=builder /app/dist ./dist
 
 EXPOSE 5500
 
-CMD ["node", "src/server.js"]
+CMD ["node", "dist/server.js"]
