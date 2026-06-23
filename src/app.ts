@@ -7,9 +7,15 @@ import tenantRouter from './routes/tenant.js'
 import type { HttpError } from 'http-errors'
 import type { NextFunction, Request } from 'express-serve-static-core'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 
 const app = express()
-
+app.use(
+    cors({
+        origin: ['http://localhost:5174'],
+        credentials: true,
+    }),
+)
 app.disable('x-powered-by')
 
 app.use(express.static('public', { dotfiles: 'allow' }))
